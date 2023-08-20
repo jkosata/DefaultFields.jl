@@ -1,0 +1,13 @@
+name = "AbstractFields"
+uuid = "736c604d-46d4-4c6b-993b-58f501ada7d6"
+authors = ["Jan Kosata <j.kosata@protonmail.com>"]
+version = "0.0.1"
+
+[compat]
+julia = "1.9"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
