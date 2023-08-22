@@ -3,7 +3,7 @@ module AbstractFields
 export @with_fields
 
 # respects mutable / immutable
-function add_field(typedef, fields...)
+function add_field!(typedef, fields...)
     @assert typedef.head == :struct
     fdef = typedef.args[3]
 
@@ -23,7 +23,7 @@ macro with_fields(namedef, fields...)
     macrodef = quote
         macro $(typename)(typedef)
             typedef.args[2] = :($(typedef.args[2]) <: $$namedef)
-            $add_field(typedef, $((Meta.quot(f) for f in fields)...))
+            esc($add_field!(typedef, $fields...))
         end
     end
     esc(:($absdef, $macrodef))
