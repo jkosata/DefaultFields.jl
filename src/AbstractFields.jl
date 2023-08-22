@@ -16,6 +16,7 @@ end
 
 macro with_fields(namedef, fields...)
 
+    allunique(_fieldnames.(fields)) || error("syntax: duplicate field name: $(_duplicates(_fieldnames.(fields))...)")
     typename = namedef isa Expr ? error("Abstract types not supported") : namedef
     absdef = Expr(:abstract, namedef)
 
@@ -28,12 +29,17 @@ macro with_fields(namedef, fields...)
     esc(:($absdef, $macrodef))
 end
 
-_fieldnames(arb) = nothing
-
+""" Return the names of fields defined in `fdef`. """
 function _fieldnames(fdef::Expr)
     fdef.head == :block && return Symbol.(filter(!isnothing, (_fieldnames.(fdef.args))))
     fdef.head == :(::) && return fdef.args[1]
     nothing
 end
+
+_fieldnames(s::Symbol) = s
+_fieldnames(arb) = nothing
+
+""" Return the list of elements in `a` which occur more than once. """
+_duplicates(a) = filter( el -> length(findall(==(el), a)) > 1, unique(a) )
 
 end
