@@ -2,7 +2,7 @@ module AbstractFields
 
 export @with_fields
 
-# respects mutable / immutable
+""" Add `fields` to  a type definition. Fields format: `:(fieldname::Type)`. """
 function add_field!(typedef, fields...)
     @assert typedef.head == :struct
     fdef = typedef.args[3]
@@ -14,6 +14,7 @@ function add_field!(typedef, fields...)
     typedef
 end
 
+""" Define an abstract type with default fields. """
 macro with_fields(namedef, fields...)
 
     allunique(_fieldnames.(fields)) || error("syntax: duplicate field name: $(_duplicates(_fieldnames.(fields))...)")
