@@ -54,9 +54,15 @@ macro with_fields(namedef, fields...)
     macrodef = quote
         macro $(macroname)(typedef)
             typedef.args[2] = :($(typedef.args[2]) <: $$macroname)
+            total_def = $add_field!(typedef, $fields...)
 
-            # evaluate the with_kw function, interpolating from this module
-            esc($Parameters.with_kw($add_field!(typedef, $fields...), @__MODULE__))
+            if $_has_kwdefs(typedef)
+                # evaluate the with_kw function (not macro), interpolating from this module
+                esc($Parameters.with_kw(total_def, @__MODULE__))
+            else
+                esc(total_def)
+            end
+
         end
     end
     esc(:($absdef, $macrodef))
@@ -76,6 +82,6 @@ _fieldnames(arb) = nothing
 """ Return the list of elements in array which occur more than once. """
 _duplicates(a) = filter( el -> length(findall(==(el), a)) > 1, unique(a) )
 
-_has_kwdefs(fieldsdef) = any( (f isa Expr && f.head == :(=) for f in fieldsdef) )
+_has_kwdefs(typedef::Expr) = any( (f isa Expr && f.head == :(=) for f in typedef.args[3].args) )
 
 end
