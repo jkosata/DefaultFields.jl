@@ -1,5 +1,6 @@
 module AbstractFields
 
+using Parameters
 export @with_fields
 
 """ Add `fields` to  a type definition. Fields format: `:(fieldname::Type)`. """
@@ -53,7 +54,9 @@ macro with_fields(namedef, fields...)
     macrodef = quote
         macro $(macroname)(typedef)
             typedef.args[2] = :($(typedef.args[2]) <: $$macroname)
-            esc($add_field!(typedef, $fields...))
+
+            # evaluate the with_kw function, interpolating from this module
+            esc($Parameters.with_kw($add_field!(typedef, $fields...), @__MODULE__))
         end
     end
     esc(:($absdef, $macrodef))

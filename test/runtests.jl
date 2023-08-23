@@ -36,7 +36,7 @@ end
 # to replace Base.@kwdef with @with_kw requires a modification of Parameters.jl to unwrap macrocalls
 ###
 
-Base.@kwdef @abs_type struct kw_struct
+@abs_type struct kw_struct
     new_field
     new_field_def=1
 end
@@ -47,7 +47,7 @@ kw_inst = kw_struct(custom_float=1, custom_int=2, new_field=[])
 @test kw_inst.new_field_def == 1
 
 @with_fields abs_def custom_float=1.0 custom_int::Int=4
-Base.@kwdef @abs_def struct struct_with_defs
+@abs_def struct struct_with_defs
     particular
 end
 
