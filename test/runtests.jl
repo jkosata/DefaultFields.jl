@@ -1,6 +1,7 @@
 using AbstractFields, Test, Parameters
 
-@with_fields abs_type custom_float::Float64 custom_int::Int
+abstract type supertype end
+@with_fields abs_type <: supertype custom_float::Float64 custom_int::Int
 
 @abs_type struct new_type
     orig_field::Dict
@@ -9,6 +10,8 @@ end
 @test fieldtype(new_type, :orig_field) == Dict
 @test fieldtype(new_type, :custom_float) == Float64
 @test fieldtype(new_type, :custom_int) == Int
+
+@test new_type <: abs_type && new_type <: supertype
 
 new_inst = new_type(Dict(), 1.0, 2)
 @test new_inst isa abs_type
@@ -30,10 +33,10 @@ end
 
 ###
 # Parameters.jl compatibility
-# requires a modification of Parameters.jl to unwrap macrocalls
+# to replace Base.@kwdef with @with_kw requires a modification of Parameters.jl to unwrap macrocalls
 ###
 
-@with_kw @abs_type struct kw_struct
+Base.@kwdef @abs_type struct kw_struct
     new_field
     new_field_def=1
 end
@@ -44,7 +47,7 @@ kw_inst = kw_struct(custom_float=1, custom_int=2, new_field=[])
 @test kw_inst.new_field_def == 1
 
 @with_fields abs_def custom_float=1.0 custom_int::Int=4
-@with_kw @abs_def struct struct_with_defs
+Base.@kwdef @abs_def struct struct_with_defs
     particular
 end
 

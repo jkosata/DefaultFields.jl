@@ -14,16 +14,45 @@ function add_field!(typedef, fields...)
     typedef
 end
 
-""" Define an abstract type with default fields. """
+"""
+```julia
+@with_fields atypename fields...
+```
+Macro to define an abstract type `atypename` that automatically adds `fields` to its subtypes.
+The subtypes are declared using the macro `@atypename`.
+
+# Examples:
+
+```julia
+@with_fields abs_type a::Int b
+@abs_type struct mystruct
+    c::Float64
+end
+
+julia> fieldnames(mystruct)
+(:c, :a, :b)
+
+julia> fieldtypes(mystruct)
+(Float64, Int64, Any)
+
+julia> mystruct <: abs_type
+true
+
+
+julia> abstract type supertype end
+julia> @with_fields abs_type <: supertype field_a field_b
+julia> abs_type <: supertype
+true
+```
+"""
 macro with_fields(namedef, fields...)
-
     allunique(_fieldnames.(fields)) || error("syntax: duplicate field name: $(_duplicates(_fieldnames.(fields))...)")
-    typename = namedef isa Expr ? error("Abstract types not supported") : namedef
-    absdef = Expr(:abstract, namedef)
+    macroname = namedef isa Expr ? (namedef.head == :<: ? namedef.args[1] : error("Invalid abstract type declaration")) : namedef
 
+    absdef = Expr(:abstract, namedef)
     macrodef = quote
-        macro $(typename)(typedef)
-            typedef.args[2] = :($(typedef.args[2]) <: $$namedef)
+        macro $(macroname)(typedef)
+            typedef.args[2] = :($(typedef.args[2]) <: $$macroname)
             esc($add_field!(typedef, $fields...))
         end
     end
@@ -41,7 +70,9 @@ end
 _fieldnames(s::Symbol) = s
 _fieldnames(arb) = nothing
 
-""" Return the list of elements in `a` which occur more than once. """
+""" Return the list of elements in array which occur more than once. """
 _duplicates(a) = filter( el -> length(findall(==(el), a)) > 1, unique(a) )
+
+_has_kwdefs(fieldsdef) = any( (f isa Expr && f.head == :(=) for f in fieldsdef) )
 
 end
