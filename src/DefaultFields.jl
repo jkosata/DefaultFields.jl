@@ -1,4 +1,4 @@
-module AbstractFields
+module DefaultFields
 
 using Parameters
 export @with_fields

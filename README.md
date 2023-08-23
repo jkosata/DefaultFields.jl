@@ -1,4 +1,4 @@
-![tests](https://github.com/jkosata/AbstractFields.jl/workflows/tests/badge.svg?branch=master)
+![tests](https://github.com/jkosata/DefaultFields.jl/workflows/tests/badge.svg?branch=master)
 
 This is a simple package to enable declaring fields for abstract types in Julia, see https://github.com/JuliaLang/julia/issues/4935
 

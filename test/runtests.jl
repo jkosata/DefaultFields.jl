@@ -1,4 +1,4 @@
-using AbstractFields, Test, Parameters
+using DefaultFields, Test, Parameters
 
 abstract type supertype end
 @with_fields abs_type <: supertype custom_float::Float64 custom_int::Int

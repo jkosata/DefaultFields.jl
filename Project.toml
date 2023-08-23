@@ -1,4 +1,4 @@
-name = "AbstractFields"
+name = "DefaultFields"
 uuid = "736c604d-46d4-4c6b-993b-58f501ada7d6"
 authors = ["Jan Kosata <j.kosata@protonmail.com>"]
 version = "0.0.1"
@@ -8,6 +8,7 @@ Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 
 [compat]
 julia = "1.9"
+Parameters = "0.12.3"
 
 [extras]
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
