@@ -34,6 +34,7 @@ end
 function _fieldnames(fdef::Expr)
     fdef.head == :block && return Symbol.(filter(!isnothing, (_fieldnames.(fdef.args))))
     fdef.head == :(::) && return fdef.args[1]
+    fdef.head == :(=) && return _fieldnames(fdef.args[1])
     nothing
 end
 

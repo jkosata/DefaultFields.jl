@@ -28,13 +28,29 @@ end
 
 @test_throws "syntax: duplicate" @macroexpand @with_fields invalid_type custom_field custom_field
 
-# tests below pass with an appropriate modification of Parameters.jl to unwrap macrocalls
+###
+# Parameters.jl compatibility
+# requires a modification of Parameters.jl to unwrap macrocalls
+###
+
 @with_kw @abs_type struct kw_struct
     new_field
     new_field_def=1
 end
 
-@test all( (in(f, fieldnames(kw_struct)) for f in [:new_field, :new_field_def, :custom_int, :custom_float]))
+@test Set([:new_field, :new_field_def, :custom_int, :custom_float]) == Set(fieldnames(kw_struct))
 
 kw_inst = kw_struct(custom_float=1, custom_int=2, new_field=[])
 @test kw_inst.new_field_def == 1
+
+@with_fields abs_def custom_float=1.0 custom_int::Int=4
+@with_kw @abs_def struct struct_with_defs
+    particular
+end
+
+@test Set(fieldnames(struct_with_defs)) == Set([:custom_float, :custom_int, :particular])
+
+@test struct_with_defs(particular=1).custom_int == 4
+@test struct_with_defs(particular=1).custom_float == 1.0
+@test struct_with_defs(particular=1, custom_int=2, custom_float=0).custom_int == 2
+@test struct_with_defs <: abs_def
