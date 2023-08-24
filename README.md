@@ -21,6 +21,9 @@ julia> fieldnames(mystruct)
 
 julia> mystruct(1, 2, [])
 mystruct(1.0, 2, Any[])
+
+julia> mystruct <: abs_type
+true
 ```
 
 ### Default values
