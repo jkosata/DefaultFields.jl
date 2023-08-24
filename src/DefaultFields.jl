@@ -25,10 +25,10 @@ The subtypes are declared using the macro `@atypename`.
 # Examples:
 
 ```julia
-@with_fields abs_type a::Int b
-@abs_type struct mystruct
-    c::Float64
-end
+julia>  @with_fields abs_type a::Int b
+julia>  @abs_type struct mystruct
+            c::Float64
+        end
 
 julia> fieldnames(mystruct)
 (:c, :a, :b)
